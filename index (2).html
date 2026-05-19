@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPantry — Your saved recipes, finally searchable.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,300;1,9..144,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Core palette — unchanged */
+  --bg:         #F7F5F0;
+  --surface:    #FFFFFF;
+  --surface-2:  #F0EDE6;
+  --border:     #E4E0D8;
+  --text:       #18160F;
+  --text-2:     #6B665C;
+  --text-3:     #A09890;
+
+  /* Primary accent — unchanged */
+  --accent:       #C4622D;
+  --accent-dark:  #A0501F;
+  --accent-light: #F5EAE2;
+  --accent-rgb:   196, 98, 45;
+
+  /* Secondary accent — NEW: muted sage/teal, used sparingly */
+  --sage:       #4A7C6F;
+  --sage-light: #E8F2F0;
+  --sage-mid:   #C4DDD8;
+
+  /* Platform colours */
+  --tiktok:    #E8445A;
+  --instagram: #B5388B;
+  --youtube:   #C4302B;
+
+  --radius:    14px;
+  --radius-sm: 9px;
+  --radius-xs: 6px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─── UTILITY ─── */
+.container { max-width: 1080px; margin: 0 auto; padding: 0 36px; }
+
+.section-label {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-3);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::before {
+  content: '';
+  display: inline-block; width: 18px; height: 1.5px;
+  background: var(--text-3); border-radius: 2px; flex-shrink: 0;
+}
+
+.section-heading {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(30px, 3.8vw, 48px);
+  font-weight: 800; letter-spacing: -1px;
+  line-height: 1.1; color: var(--text);
+  margin-bottom: 44px;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(247, 245, 240, 0.92);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 19px; font-weight: 800;
+  color: var(--text); letter-spacing: -0.4px;
+}
+.nav-logo span { color: var(--accent); }
+.nav-cta {
+  background: var(--text); color: #fff;
+  border: none; border-radius: 100px;
+  padding: 9px 22px; font-size: 13.5px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.18s, transform 0.12s;
+  display: inline-block;
+}
+.nav-cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* ─── HERO ─── */
+#hero {
+  padding: 152px 0 0;
+  text-align: center;
+  /* subtle warm-tinted radial glow behind content */
+  background:
+    radial-gradient(ellipse 72% 56% at 50% 0%, rgba(196,98,45,0.07) 0%, transparent 70%),
+    var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* faint grid texture */
+#hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 0%, transparent 80%);
+}
+
+.hero-inner { position: relative; z-index: 1; padding-bottom: 0; }
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--sage);
+  background: var(--sage-light);
+  border: 1px solid var(--sage-mid);
+  padding: 5px 14px 5px 10px; border-radius: 100px; margin-bottom: 32px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--sage); flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(74,124,111,0.2);
+}
+
+.hero-headline {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(56px, 8.5vw, 96px);
+  font-weight: 800; line-height: 1.0;
+  letter-spacing: -3px; color: var(--text);
+  max-width: 860px; margin: 0 auto 20px;
+}
+.hero-headline em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+  position: relative;
+}
+
+.hero-sub {
+  font-size: 17px; font-weight: 400;
+  color: var(--text-2);
+  max-width: 480px; margin: 0 auto 40px;
+  line-height: 1.7;
+}
+
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 100px;
+  padding: 15px 34px; font-size: 15px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.18s, transform 0.14s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(var(--accent-rgb), 0.30), 0 1px 3px rgba(var(--accent-rgb), 0.18);
+  letter-spacing: 0.01em;
+}
+.hero-cta:hover {
+  background: var(--accent-dark); transform: translateY(-2px);
+  box-shadow: 0 10px 36px rgba(var(--accent-rgb), 0.36), 0 2px 6px rgba(var(--accent-rgb), 0.2);
+}
+.hero-cta svg { width: 15px; height: 15px; }
+
+/* HERO MOCKUP */
+.hero-mockup-wrap {
+  position: relative;
+  margin: 52px auto 0;
+  max-width: 760px;
+  padding-bottom: 0;
+}
+
+/* glow layer behind mockup */
+.hero-mockup-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -32px -48px;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, rgba(var(--accent-rgb), 0.10) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+.hero-mockup {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  border: 1px solid rgba(228, 224, 216, 0.9);
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.7) inset,
+    0 32px 96px rgba(26,22,15,0.18),
+    0 12px 32px rgba(26,22,15,0.10),
+    0 2px 6px rgba(26,22,15,0.07);
+  overflow: hidden;
+}
+
+.mockup-topbar {
+  background: #F4F1EB;
+  border-bottom: 1px solid var(--border);
+  padding: 13px 20px;
+  display: flex; align-items: center; gap: 7px;
+}
+.mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mockup-dot:nth-child(1) { background: #FF5F57; }
+.mockup-dot:nth-child(2) { background: #FEBC2E; }
+.mockup-dot:nth-child(3) { background: #28C840; }
+.mockup-urlbar {
+  margin-left: 16px; flex: 1;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 12px;
+  font-size: 11px; color: var(--text-3);
+  text-align: center;
+  max-width: 260px;
+}
+
+.mockup-body { padding: 24px 24px 20px; background: #FAFAF8; }
+
+.mockup-search {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff;
+  border: 1.5px solid var(--sage-mid);
+  border-radius: var(--radius-sm);
+  padding: 11px 16px; margin-bottom: 20px;
+  box-shadow: 0 0 0 3px rgba(74,124,111,0.07), 0 1px 4px rgba(74,124,111,0.06);
+}
+.mockup-search svg { color: var(--sage); flex-shrink: 0; }
+.mockup-search-text {
+  font-size: 13.5px; color: var(--text);
+  font-weight: 500;
+}
+.mockup-search-kbd {
+  margin-left: auto;
+  font-size: 10px; color: var(--text-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 6px;
+  font-family: monospace;
+}
+
+.mockup-results-header {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-3);
+  margin-bottom: 10px; padding: 0 2px;
+}
+
+.mockup-results { display: flex; flex-direction: column; gap: 8px; }
+
+.result-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px; text-align: left;
+  transition: box-shadow 0.15s;
+}
+.result-card:first-child {
+  border-color: rgba(74,124,111,0.3);
+  box-shadow: 0 0 0 1px rgba(74,124,111,0.08);
+}
+
+.result-row-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; margin-bottom: 6px;
+}
+.result-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.result-meta { font-size: 10.5px; color: var(--text-3); margin-bottom: 8px; }
+.result-preview { font-size: 11.5px; color: var(--text-2); line-height: 1.6; margin-bottom: 10px; }
+.result-footer { display: flex; align-items: center; justify-content: space-between; }
+
+.platform-tag {
+  font-size: 10.5px; font-weight: 700;
+  padding: 2.5px 9px; border-radius: 100px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+.tag-tiktok    { background: #FFF0F2; color: var(--tiktok);    border: 1px solid rgba(232,68,90,0.18); }
+.tag-instagram { background: #FAF0F6; color: var(--instagram); border: 1px solid rgba(181,56,139,0.18); }
+.tag-youtube   { background: #FFF0F0; color: var(--youtube);   border: 1px solid rgba(196,48,43,0.18); }
+
+.result-source { font-size: 10.5px; color: var(--text-3); }
+
+/* ─── DIVIDER ─── */
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+/* ─── PROBLEM ─── */
+#problem { padding: 72px 0 64px; }
+
+.problem-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+.problem-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 26px;
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: box-shadow 0.2s;
+}
+.problem-item:hover { box-shadow: 0 4px 20px rgba(26,22,15,0.07); }
+
+.problem-icon {
+  width: 38px; height: 38px; border-radius: 9px;
+  background: var(--accent-light);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 17px;
+}
+
+.problem-text { font-size: 14.5px; color: var(--text-2); line-height: 1.6; }
+.problem-text strong {
+  color: var(--text); font-weight: 600;
+  display: block; margin-bottom: 5px; font-size: 14.5px;
+}
+
+/* ─── INSIGHT ─── */
+#insight {
+  padding: 80px 0;
+  background: var(--text);
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+#insight::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(196,98,45,0.12) 0%, transparent 70%);
+}
+.insight-text {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(26px, 3.8vw, 46px);
+  font-weight: 300; font-style: italic;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: -0.5px; line-height: 1.35;
+  position: relative; z-index: 1;
+}
+.insight-text strong {
+  font-weight: 800; font-style: normal;
+  color: #F5B090;
+  background: rgba(245,176,144,0.12);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+/* ─── SOLUTION ─── */
+#solution { padding: 88px 0 80px; }
+
+.flow-steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 36px;
+}
+.flow-step { padding: 32px 24px; border-right: 1px solid var(--border); position: relative; }
+.flow-step:last-child { border-right: none; }
+.flow-step:first-child { background: linear-gradient(135deg, rgba(74,124,111,0.04) 0%, transparent 60%); }
+
+.step-num {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 14px;
+}
+.step-label {
+  font-family: 'Fraunces', serif;
+  font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+.step-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+
+.step-arrow {
+  position: absolute; right: -12px; top: 50%;
+  transform: translateY(-50%);
+  width: 24px; height: 24px;
+  background: var(--text); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2; color: #fff; font-size: 10px; font-weight: 700;
+}
+
+.solution-sub {
+  font-size: 16px; color: var(--text-2);
+  text-align: center; max-width: 500px; margin: 0 auto; line-height: 1.7;
+}
+
+/* ─── MAGIC MOMENT ─── */
+#magic {
+  padding: 0 0 88px;
+  background: var(--bg);
+}
+
+.magic-band {
+  background: linear-gradient(160deg, #111C1A 0%, #0D1715 55%, #141F1D 100%);
+  padding: 80px 0;
+  margin-bottom: 0;
+  position: relative; overflow: hidden;
+}
+.magic-band::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 55% 70% at 20% 50%, rgba(74,124,111,0.10) 0%, transparent 65%);
+}
+
+.magic-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
+}
+
+/* Left: the product demo card */
+.magic-demo {
+  background: rgba(10, 18, 17, 0.9);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3);
+  position: relative; z-index: 1;
+}
+
+.magic-demo-bar {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.magic-demo-bar::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--sage); flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(74,124,111,0.3);
+}
+
+.magic-query {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(74,124,111,0.45);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px; margin-bottom: 16px;
+  box-shadow: 0 0 0 3px rgba(74,124,111,0.1);
+}
+.magic-query svg { color: var(--sage); flex-shrink: 0; }
+.magic-query-text {
+  font-size: 15px; font-weight: 600;
+  color: #fff; font-style: italic;
+  letter-spacing: -0.2px;
+}
+
+.magic-result-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.3);
+  margin-bottom: 10px;
+}
+
+.magic-results { display: flex; flex-direction: column; gap: 8px; }
+
+.magic-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--radius-sm);
+  padding: 13px 15px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  transition: background 0.15s;
+}
+.magic-card:hover { background: rgba(255,255,255,0.09); }
+.magic-card:first-child {
+  border-color: rgba(74,124,111,0.4);
+  background: rgba(74,124,111,0.1);
+}
+
+.mc-title { font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 3px; }
+.mc-sub   { font-size: 10.5px; color: rgba(255,255,255,0.42); }
+
+/* Right: copy */
+.magic-right .section-label { color: rgba(255,255,255,0.4); }
+.magic-right .section-label::before { background: rgba(255,255,255,0.25); }
+
+.magic-right .section-heading {
+  font-size: clamp(26px, 3vw, 40px);
+  margin-bottom: 18px;
+  color: #fff;
+}
+
+.magic-right p {
+  font-size: 16px; color: rgba(255,255,255,0.6);
+  line-height: 1.75; margin-bottom: 28px;
+}
+
+.magic-quote {
+  background: rgba(255,255,255,0.06);
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-family: 'Fraunces', serif;
+  font-size: 17px; font-style: italic;
+  color: rgba(255,255,255,0.88); line-height: 1.5;
+}
+
+/* ─── FAQ ─── */
+#faq { padding: 88px 0 80px; }
+
+#faq .section-heading { margin-bottom: 0; }
+
+.faq-grid { margin-top: 32px; }
+.faq-item { border-bottom: 1px solid var(--border); padding: 24px 0; }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+
+.faq-q {
+  font-size: 15.5px; font-weight: 600; color: var(--text);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+}
+.faq-q-badge {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--accent-light); color: var(--accent);
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.faq-a { font-size: 14.5px; color: var(--text-2); line-height: 1.75; padding-left: 34px; }
+
+/* ─── WAITLIST ─── */
+#waitlist { padding: 88px 0; background: var(--surface); }
+
+.waitlist-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+}
+.waitlist-left { padding-top: 16px; }
+.waitlist-left .section-heading { font-size: clamp(28px, 3.5vw, 44px); margin-bottom: 16px; }
+.waitlist-left p { font-size: 15.5px; color: var(--text-2); line-height: 1.75; margin-bottom: 28px; }
+
+.waitlist-rolling {
+  font-size: 13.5px; color: var(--text-3);
+  line-height: 1.6;
+  display: flex; align-items: center; gap: 8px;
+}
+.waitlist-rolling::before {
+  content: '';
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--sage); flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(74,124,111,0.18);
+}
+
+.waitlist-form-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  height: 75vh; max-height: 640px; min-height: 480px;
+  box-shadow: 0 4px 24px rgba(26,22,15,0.06);
+}
+.waitlist-form-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* ─── VISION ─── */
+#vision { padding: 80px 0; }
+
+.vision-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin-top: 36px;
+}
+.vision-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 26px;
+}
+.vision-tag {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 12px;
+}
+.vision-title {
+  font-family: 'Fraunces', serif;
+  font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+}
+.vision-desc { font-size: 13.5px; color: var(--text-2); line-height: 1.65; }
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 32px;
+  text-align: center;
+  font-size: 12.5px; color: var(--text-3);
+}
+footer strong { color: var(--text-2); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.22s; }
+.d3 { animation-delay: 0.34s; }
+.d4 { animation-delay: 0.50s; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  .container { padding: 0 20px; }
+  #hero { padding: 112px 0 0; }
+  .hero-headline { font-size: clamp(40px, 11vw, 64px); letter-spacing: -1.5px; }
+  .problem-grid, .magic-inner, .waitlist-inner { grid-template-columns: 1fr; }
+  .flow-steps { grid-template-columns: 1fr 1fr; }
+  .vision-cards { grid-template-columns: 1fr; }
+  .flow-step { border-right: none; border-bottom: 1px solid var(--border); }
+  .flow-step:last-child { border-bottom: none; }
+  .step-arrow { display: none; }
+  .waitlist-form-wrap { height: 60vh; }
+  .magic-band { padding: 52px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">My<span>Pantry</span></div>
+  <a href="#waitlist" class="nav-cta">Join early access</a>
+</nav>
+
+
+<!-- ① HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-eyebrow fade-up">Recipe retrieval, finally solved</div>
+
+      <h1 class="hero-headline fade-up d1">
+        Your saved recipes,<br><em>finally searchable.</em>
+      </h1>
+
+      <p class="hero-sub fade-up d2">
+        MyPantry turns your saved TikTok, Instagram, and YouTube recipes into a searchable personal cookbook.
+      </p>
+
+      <a href="#waitlist" class="hero-cta fade-up d3">
+        Join early access
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <!-- HERO MOCKUP -->
+      <div class="hero-mockup-wrap fade-up d4">
+        <div class="hero-mockup">
+          <div class="mockup-topbar">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-urlbar">mypantry.app / library</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-search">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M11 11l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span class="mockup-search-text">"sweet potato brownies"</span>
+              <span class="mockup-search-kbd">↵</span>
+            </div>
+
+            <div class="mockup-results-header">3 results found</div>
+
+            <div class="mockup-results">
+              <div class="result-card">
+                <div class="result-row-top">
+                  <div class="result-title">Fudgy Sweet Potato Brownies</div>
+                  <span class="platform-tag tag-tiktok">TikTok</span>
+                </div>
+                <div class="result-meta">matched from caption + video text</div>
+                <div class="result-preview">1 cup mashed sweet potato · ½ cup almond butter · 3 tbsp cocoa · 2 eggs · ¼ cup maple syrup. Bake 180°C / 22 min…</div>
+                <div class="result-footer">
+                  <span class="result-source">Saved 14 Mar · Found in your TikTok collection</span>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-row-top">
+                  <div class="result-title">5-Ingredient Sweet Potato Brownies</div>
+                  <span class="platform-tag tag-instagram">Instagram</span>
+                </div>
+                <div class="result-meta">retrieved from saved Instagram reel</div>
+                <div class="result-preview">No flour, no refined sugar. Sweet potato + oat flour + dark chocolate chips. Naturally sweetened…</div>
+                <div class="result-footer">
+                  <span class="result-source">Saved 2 Feb · Found in your Instagram collection</span>
+                </div>
+              </div>
+              <div class="result-card">
+                <div class="result-row-top">
+                  <div class="result-title">Vegan Sweet Potato Brownies</div>
+                  <span class="platform-tag tag-youtube">YouTube</span>
+                </div>
+                <div class="result-meta">matched from hashtags + description</div>
+                <div class="result-preview">Dense, fudgy, no butter needed. Freezes well. Pairs with coconut cream…</div>
+                <div class="result-footer">
+                  <span class="result-source">Saved 28 Jan · Retrieved from saved YouTube video</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- /hero-inner -->
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+
+<!-- ② PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="section-label">The problem</div>
+    <h2 class="section-heading">You saved it.<br>You just can't find it.</h2>
+    <div class="problem-grid">
+      <div class="problem-item">
+        <div class="problem-icon">📱</div>
+        <div class="problem-text">
+          <strong>Recipes saved across multiple apps</strong>
+          TikTok, Instagram, YouTube, Facebook — your collection is scattered everywhere.
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-icon">🔍</div>
+        <div class="problem-text">
+          <strong>No unified search system</strong>
+          Each platform has its own saved folder with no way to search across all of them.
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-icon">🧠</div>
+        <div class="problem-text">
+          <strong>Reliance on memory or scrolling</strong>
+          You remember the dish but not where you saved it. Back to endless scrolling.
+        </div>
+      </div>
+      <div class="problem-item">
+        <div class="problem-icon">😔</div>
+        <div class="problem-text">
+          <strong>Eventually giving up</strong>
+          You can't find the recipe, give up, and order takeout. Again.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ③ INSIGHT -->
+<section id="insight">
+  <div class="container">
+    <p class="insight-text">
+      Social media is built for <strong>discovery</strong>,<br>not <strong>retrieval</strong>.
+    </p>
+  </div>
+</section>
+
+
+<!-- ④ SOLUTION -->
+<section id="solution">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-heading" style="margin-bottom:36px;">One system. Any recipe.<br>Instant search.</h2>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-num">Step 01</div>
+        <div class="step-label">Save</div>
+        <div class="step-desc">Add recipes you've found across TikTok, Instagram, and YouTube.</div>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">Step 02</div>
+        <div class="step-label">Store</div>
+        <div class="step-desc">MyPantry indexes the recipe title, ingredients, and metadata.</div>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">Step 03</div>
+        <div class="step-label">Search</div>
+        <div class="step-desc">Type any natural phrase — an ingredient, a vibe, a vague memory.</div>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">Step 04</div>
+        <div class="step-label">Retrieve</div>
+        <div class="step-desc">Get the exact recipe back, with the original source link.</div>
+      </div>
+    </div>
+    <p class="solution-sub">MyPantry lets you search your saved recipes instantly using natural text — no folders, no scrolling, no memory required.</p>
+  </div>
+</section>
+
+
+<!-- ⑤ MAGIC MOMENT -->
+<section id="magic">
+  <div class="magic-band">
+    <div class="container">
+      <div class="magic-inner">
+
+        <!-- Demo card (left) -->
+        <div class="magic-demo">
+          <div class="magic-demo-bar">Live search</div>
+
+          <div class="magic-query">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" style="flex-shrink:0">
+              <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M11 11l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="magic-query-text">"rice paper apple"</span>
+          </div>
+
+          <div class="magic-result-label">3 results · across 2 platforms</div>
+
+          <div class="magic-results">
+            <div class="magic-card">
+              <div>
+                <div class="mc-title">Apple rice paper dessert</div>
+                <div class="mc-sub">matched from caption + video text</div>
+              </div>
+              <span class="platform-tag tag-tiktok">TikTok</span>
+            </div>
+            <div class="magic-card">
+              <div>
+                <div class="mc-title">High-protein apple turnover</div>
+                <div class="mc-sub">retrieved from saved Instagram reel</div>
+              </div>
+              <span class="platform-tag tag-instagram">Instagram</span>
+            </div>
+            <div class="magic-card">
+              <div>
+                <div class="mc-title">Crispy rice paper apple rolls</div>
+                <div class="mc-sub">matched from hashtags + description</div>
+              </div>
+              <span class="platform-tag tag-tiktok">TikTok</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy (right) -->
+        <div class="magic-right">
+          <div class="section-label">The magic moment</div>
+          <h2 class="section-heading">Find the ones you forgot you saved.</h2>
+          <p>You typed three words. MyPantry found three recipes — from two different platforms — that you saved months ago and completely forgot about.</p>
+          <div class="magic-quote">
+            "Oh… I can actually find anything I saved."
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ⑥ FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-label">What you're probably wondering</div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-badge">Q</span>How does MyPantry work?</div>
+        <div class="faq-a">It stores saved recipes in one searchable place. You add recipes manually, and MyPantry indexes the content so you can find anything instantly using natural language.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-badge">Q</span>Do I need to manually add recipes?</div>
+        <div class="faq-a">Yes — V1 uses manual input while validating the concept. We're testing whether retrieval alone solves the core problem before building automation.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-badge">Q</span>Will this work with TikTok and Instagram?</div>
+        <div class="faq-a">Long-term yes. Current focus is validating retrieval value. Cross-platform automation is on the roadmap once the core use case is proven.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-badge">Q</span>Is this an AI cooking app?</div>
+        <div class="faq-a">No. MyPantry is a retrieval system, not a generator. It doesn't write recipes — it finds the ones you already saved.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-badge">Q</span>Why not just use saved folders?</div>
+        <div class="faq-a">Folders store. MyPantry retrieves. The difference is whether you can find something without knowing exactly where you put it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ⑦ WAITLIST -->
+<section id="waitlist">
+  <div class="container">
+    <div class="waitlist-inner">
+      <div class="waitlist-left">
+        <div class="section-label">Early access</div>
+        <h2 class="section-heading">Get early access<br>to MyPantry</h2>
+        <p>Built for people who save recipes from social media but struggle to find them when it's time to cook.<br><br>Early beta testing with a small group before wider rollout.</p>
+        <p class="waitlist-rolling">Early access is rolling — we're onboarding users gradually.</p>
+      </div>
+      <div class="waitlist-form-wrap">
+        <iframe
+          src="https://tally.so/r/ZjGyMe"
+          title="MyPantry waitlist"
+          loading="lazy"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ⑧ VISION -->
+<section id="vision">
+  <div class="container">
+    <div class="section-label">What's next</div>
+    <h2 class="section-heading" style="margin-bottom:0">Where MyPantry is headed.</h2>
+    <div class="vision-cards">
+      <div class="vision-card">
+        <div class="vision-tag">Coming soon</div>
+        <div class="vision-title">Smarter search</div>
+        <div class="vision-desc">Search by ingredient, dietary preference, cooking time, or a half-remembered description.</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-tag">Roadmap</div>
+        <div class="vision-title">Cross-platform saving</div>
+        <div class="vision-desc">Connect TikTok, Instagram, and YouTube directly so recipes save automatically — no manual input required.</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-tag">Future</div>
+        <div class="vision-title">Share sheet automation</div>
+        <div class="vision-desc">Tap share on any recipe video. MyPantry saves and indexes it instantly — just like sharing a link.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <strong>MyPantry</strong> &middot; Your saved recipes, finally searchable &middot; Early access beta &middot; 2026
+</footer>
+
+</body>
+</html>
