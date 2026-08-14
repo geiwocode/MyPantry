@@ -118,12 +118,17 @@
       align-items: center; justify-content: center;
       opacity: 0; transition: opacity 0.3s ease;
       color: #EFE1D5; text-align: center; padding: 16px;
-      font-family: 'Open Sans', sans-serif; pointer-events: none;
+      font-family: 'Open Sans', sans-serif;
     }
     .origin-overlay p { margin: 0 0 6px; line-height: 1.4; }
     .origin-overlay .main-quote { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 800; color: #EFE1D5; }
     .origin-overlay .sub-text { font-size: 10px; color: rgba(255,255,255,0.85); text-align: left; }
     .origin-overlay .hint { font-size: 9px; color: rgba(255,255,255,0.3); margin-top: 8px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    /* ★★★ FIX: Only block clicks when the overlay is actually visible ★★★ */
+    .origin-image-wrap:hover .origin-overlay, .origin-image-wrap:active .origin-overlay { 
+      pointer-events: none; 
+    }
 
     /* Hover/Tap effects */
     .origin-image-wrap:hover img, .origin-image-wrap:active img { transform: scale(1.03); filter: brightness(0.7); }
@@ -145,8 +150,6 @@
 
     .chaos-phone { background: var(--chocolate-torte); border-radius: 12px; padding: 10px 8px; overflow: hidden; width: 100%; }
     .chaos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; }
-    
-    /* ★★★ RESTORED EXTERNAL IMAGE SOURCES ★★★ */
     .tile { aspect-ratio: 1; border-radius: 6px; width: 100%; background-size: cover; background-position: center; filter: blur(1.6px) saturate(0.7) brightness(0.75); transform: rotate(var(--tilt, 0deg)); overflow: hidden; position: relative; border: 0.5px solid rgba(255,255,255,0.10); }
     .tile:nth-child(1) { --tilt: -4deg; background-image: url('https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=150&q=30'); }
     .tile:nth-child(2) { --tilt: 3deg; background-image: url('https://images.unsplash.com/photo-1546549032-9571cd6b27df?auto=format&fit=crop&w=150&q=30'); }
@@ -160,7 +163,6 @@
     .tile:nth-child(10) { --tilt: 4deg; background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=150&q=30'); }
     .tile:nth-child(11) { --tilt: -3deg; background-image: url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=150&q=30'); }
     .tile:nth-child(12) { --tilt: 2deg; background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=150&q=30'); }
-    
     .tile-card { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 3px; }
     .tile-badge { align-self: flex-start; display: inline-block; font-size: 5px; letter-spacing: 0.05em; text-transform: uppercase; background: rgba(24, 23, 19, 0.75); color: #fff; border-radius: 2px; padding: 1px 2px; font-weight: 700; }
     .tile-name { font-size: 5px; font-weight: 700; line-height: 1.1; color: rgba(255,255,255,0.95); text-shadow: 0 0.5px 0 rgba(0,0,0,0.25); }
@@ -307,76 +309,7 @@
   <strong>MyPantry</strong> &middot; Your saved recipes, finally searchable &middot; 2026
 </footer>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    const resultsContainer = document.getElementById('results');
-
-    const recipes = [
-      { id: 1, title: "Fudgy Sweet Potato Brownies", ingredients: "1 cup mashed sweet potato · ½ cup almond butter · 3 tbsp cocoa · 2 eggs · ¼ cup maple syrup. Bake 180°C / 22 min.", source: "TikTok", tags: ["sweet potato", "brownies", "fudgy", "chocolate", "dessert", "vegan", "healthy"] },
-      { id: 2, title: "5-Ingredient Sweet Potato Brownies", ingredients: "Sweet potato + oat flour + dark chocolate chips. No flour, no refined sugar.", source: "Instagram", tags: ["sweet potato", "brownies", "5 ingredient", "healthy", "dessert", "chocolate"] },
-      { id: 3, title: "Vegan Sweet Potato Brownies", ingredients: "Dense, fudgy, no butter needed. Freezes well. Pairs with coconut cream.", source: "YouTube", tags: ["sweet potato", "brownies", "vegan", "dairy free", "dessert"] },
-      { id: 4, title: "Apple rice paper dessert", ingredients: "Thin rice paper wrappers with cinnamon apples. Crispy, sweet, and air-fryer friendly.", source: "TikTok", tags: ["rice paper", "apple", "dessert", "crispy", "fruit", "sweet"] },
-      { id: 5, title: "High-protein apple turnover", ingredients: "Flaky pastry filled with spiced apples and a protein boost. Perfect for breakfast.", source: "Instagram", tags: ["apple", "turnover", "protein", "breakfast", "pastry"] },
-      { id: 6, title: "Crispy rice paper apple rolls", ingredients: "Rolled apples in rice paper, pan-fried until golden. Served with a caramel drizzle.", source: "TikTok", tags: ["rice paper", "apple", "rolls", "crispy", "dessert", "fried"] },
-      { id: 7, title: "Cheesy Baked Pasta", ingredients: "Penne, heavy cream, mozzarella, parmesan, garlic. Baked until bubbly and golden.", source: "Instagram", tags: ["pasta", "cheesy", "baked", "italian", "dinner", "creamy"] }
-    ];
-
-    function normalizeQuery(q) { return q.toLowerCase().replace(/the|a|an|and|of|for|with|without|kind of|sort of/g, '').replace(/\s+/g, ' ').trim(); }
-    function getSynonyms(w) { const m = {'sweet':['sweet','sugar','candy'],'potato':['potato','potatoes','yam','yams'],'brownie':['brownie','brownies','cake','dessert'],'chocolate':['chocolate','cocoa','cacao'],'apple':['apple','apples'],'pasta':['pasta','noodle','noodles','spaghetti'],'cheese':['cheese','cheesy','mozzarella'],'protein':['protein','muscle','gym'],'healthy':['healthy','clean','diet','nutritious'],'quick':['quick','fast','easy']}; return m[w] ? m[w] : [w]; }
-    function expandQuery(q) { let e=[]; q.split(' ').forEach(w=>e.push(...getSynonyms(w))); return [...new Set(e)]; }
-
-    function searchRecipes(q) {
-      if (!q.trim()) return [];
-      const qWords = expandQuery(normalizeQuery(q));
-      let scored = recipes.map(r => {
-        let s=0; const txt = (r.title+' '+r.ingredients+' '+r.tags.join(' ')).toLowerCase();
-        qWords.forEach(w=>{ if(txt.includes(w)){ if(r.title.toLowerCase().includes(w)) s+=2; else if(r.tags.some(t=>t.includes(w))) s+=1.5; else s+=1; } });
-        return {...r, score:s};
-      });
-      let results = scored.filter(i=>i.score>0).sort((a,b)=>b.score-a.score);
-      let didYouMean = null;
-      if(results.length===0) {
-        const allWords = recipes.map(r=>r.title.toLowerCase().split(' ')).flat();
-        qWords.forEach(qw=>{ allWords.forEach(rw=>{ if(Math.abs(rw.length-qw.length)<=1&&rw.length>2){let m=0;for(let i=0;i<Math.min(rw.length,qw.length);i++)if(rw[i]===qw[i])m++;if(m>=Math.min(rw.length,qw.length)-1) didYouMean=rw;}});});
-      }
-      return {results, didYouMean};
-    }
-
-    function render(q) {
-      if(!q||q.trim().length===0){ resultsContainer.innerHTML=`<p class="welcome-message">Ingredient, mood, dish, or a vague kitchen memory.</p>`; return; }
-      const {results, didYouMean}=searchRecipes(q);
-      if(results.length===0) {
-        let h=`<p class="no-results">No matches found.`;
-        if(didYouMean) h+=` <button style="background:none; border:none; color:var(--terracotta); font-weight:600; cursor:pointer; text-decoration:underline;" onclick="document.getElementById('searchInput').value='${didYouMean}'; document.getElementById('searchInput').dispatchEvent(new Event('input'));">Did you mean: "${didYouMean}"?</button>`;
-        h+=`</p>`; resultsContainer.innerHTML=h; return;
-      }
-      let h=`<div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px;">${results.length} results found</div>`;
-      results.forEach((r,i)=> {
-        let pc = r.source.toLowerCase()==='instagram'?'instagram':r.source.toLowerCase()==='youtube'?'youtube':'tiktok';
-        let bestMatchTag = (i === 0) ? `<div class="match-tag">★ Best match</div>` : '';
-        h+=`
-          <div class="recipe-card">
-            ${bestMatchTag}
-            <div class="title">${r.title}</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <span class="source">Saved from ${r.source}</span>
-              <span class="platform-tag ${pc}"><i class="fa-brands fa-${r.source.toLowerCase()}"></i> ${r.source}</span>
-            </div>
-            <div class="ingredients">${r.ingredients}</div>
-          </div>
-        `;
-      });
-      resultsContainer.innerHTML=h;
-    }
-
-    searchInput.addEventListener('input', e=>render(e.target.value));
-    setTimeout(()=>{ 
-      searchInput.value = "paper thingy"; 
-      render("paper thingy"); 
-    }, 100);
-  });
-</script>
+<script src="mypantrydemo.js" defer></script>
 
 </body>
 </html>
