@@ -1,12 +1,7 @@
-﻿// 
+// 
 // myPantry recipe search
 // 
 // This file stores the recipe data and handles the search/filter logic.
-// The main idea is simple:
-// 1. We keep a list of saved recipes.
-// 2. We normalize user input so fuzzy searches are easier.
-// 3. We compare the typed words with recipe titles, ingredients, and tags.
-// 4. We show the matching cards on the page.
 // 
 
 const recipes = [
@@ -100,10 +95,6 @@ const recipes = [
   }
 ];
 
-// 
-// DOM references
-// 
-// These are the HTML elements we will update.
 const searchInput = document.getElementById('searchInput');
 const resultsDiv = document.getElementById('results');
 
@@ -113,6 +104,9 @@ const searchState = {
   resultCount: 0,
   isEmpty: true
 };
+
+// Set default message
+resultsDiv.innerHTML = '<p class="welcome-message">Describe what you remember about the recipe you\'re thinking of, don\'t be shy.</p>';
 
 const demoSuggestions = [
   "banana dessert",
@@ -263,7 +257,6 @@ function renderDidYouMean(query) {
     handleSearch();
   });
 }
-
 
 function getRecipeMatchMeta(recipe, query) {
   const terms = expandTerms(query);
@@ -519,7 +512,7 @@ function getRecipeMatchMeta(recipe, query) {
 function renderRecipeCard(recipe, isBestMatch) {
   const matchMeta = getRecipeMatchMeta(recipe, searchInput.value);
 
-  // ★★★ ADDED "BEST MATCH" LOGIC HERE ★★★
+  // ★★★ BEST MATCH LOGIC ★★★
   let bestMatchHtml = '';
   if (isBestMatch) {
     bestMatchHtml = `<div class="match-tag">★ Best match</div>`;
@@ -545,23 +538,9 @@ function renderRecipeCard(recipe, isBestMatch) {
 function renderRecipeList(matches) {
   resultsDiv.innerHTML = '';
 
-  // ★★★ We pass 'true' for the first item (index 0) to mark it as Best Match ★★★
   matches.forEach((recipe, index) => {
     resultsDiv.innerHTML += renderRecipeCard(recipe, index === 0);
   });
 }
 
-
 searchInput.addEventListener('input', handleSearch);
-
-
-// 
-// Why the old version broke
-// 
-// The old script had a top-level filter block that used variables such as queryTerms
-// before those variables were created. That caused a runtime error and stopped the page.
-// The fix is to keep all dependent variables inside the functions that actually use them.
-// 
-
-// Default message when the page first loads.
-resultsDiv.innerHTML = '<p class="welcome-message">Describe what you remember about the recipe you\'re thinking of, don\'t be shy.</p>';
