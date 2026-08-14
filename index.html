@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MyPantry — Your saved recipes, finally searchable.</title>
@@ -23,80 +23,53 @@
       --shadow: 0 18px 35px rgba(24, 23, 19, 0.08);
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
       font-family: 'Open Sans', Arial, sans-serif;
       background: var(--blanc);
       color: var(--dark-roast);
       line-height: 1.45;
-      -webkit-font-smoothing: antialiased;
     }
-
     a { text-decoration: none; color: inherit; }
 
-    .container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
     /* ─── NAV ─── */
     nav {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 40px;
-      background: rgba(231, 233, 231, 0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
+      padding: 16px 40px; background: rgba(231,233,231,0.92);
+      backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
       position: sticky; top: 0; z-index: 100;
     }
-    .nav-logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800; color: var(--dark-roast); }
+    .nav-logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800; }
     .nav-logo span { color: var(--terracotta); }
-    .nav-cta { background: var(--coffee-bean); color: #fff; border-radius: 100px; padding: 8px 20px; font-size: 13px; font-weight: 600; transition: 0.2s; }
-    .nav-cta:hover { background: var(--terracotta); transform: translateY(-1px); }
-
-    /* ─── SPLIT HERO SECTION ─── */
-    #split-hero {
-      padding: 100px 0 60px;
-      background: var(--blanc);
+    .nav-cta {
+      background: var(--coffee-bean); color: #fff; border-radius: 100px;
+      padding: 8px 20px; font-size: 13px; font-weight: 600; transition: 0.2s;
     }
-    .split-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
+    .nav-cta:hover { background: var(--terracotta); }
 
-    /* LEFT: Hero Copy */
-    .hero-left { padding-right: 20px; }
+    /* ─── SPLIT HERO ─── */
+    #split-hero { padding: 100px 0 60px; }
+    .split-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+
     .hero-headline {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(44px, 5vw, 64px);
-      font-weight: 800; letter-spacing: -0.03em;
-      line-height: 1.05; color: var(--dark-roast);
-      margin: 0 0 16px;
+      font-family: 'Fraunces', serif; font-size: clamp(44px, 5vw, 64px);
+      font-weight: 800; line-height: 1.05; margin: 0 0 16px;
     }
     .hero-headline em { font-style: italic; font-weight: 300; color: var(--terracotta); }
     .hero-sub { font-size: 17px; color: var(--muted); margin: 0 0 32px; max-width: 400px; }
     .hero-cta {
       display: inline-block; background: var(--coffee-bean); color: #fff;
-      border-radius: 100px; padding: 14px 32px;
-      font-weight: 600; font-size: 15px;
-      box-shadow: 0 4px 16px rgba(46, 13, 20, 0.2); transition: 0.2s;
+      border-radius: 100px; padding: 14px 32px; font-weight: 600; font-size: 15px;
+      box-shadow: 0 4px 16px rgba(46,13,20,0.2); transition: 0.2s;
     }
     .hero-cta:hover { background: var(--terracotta); transform: translateY(-2px); }
 
-    /* RIGHT: Origin Story */
+    /* Origin Story */
     .origin-right {
-      background: var(--coffee-bean);
-      border-radius: 20px;
-      padding: 40px 36px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      background: var(--coffee-bean); border-radius: 20px; padding: 40px 36px;
+      text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden;
     }
     .origin-right::before {
       content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -107,30 +80,19 @@
     .origin-image-wrap { display: inline-block; position: relative; cursor: pointer; margin: 0 auto 12px; }
     .origin-image-wrap img {
       max-width: 180px; width: 100%; border-radius: 12px;
-      transition: transform 0.3s ease, filter 0.3s ease;
-      display: block; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease, filter 0.3s ease; display: block; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
     
-    /* The Overlay */
     .origin-overlay {
-      position: absolute; inset: 0; background: rgba(24, 23, 19, 0.85);
-      border-radius: 12px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.3s ease;
-      color: #EFE1D5; text-align: center; padding: 16px;
-      font-family: 'Open Sans', sans-serif;
+      position: absolute; inset: 0; background: rgba(24,23,19,0.85); border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s ease; color: #EFE1D5; text-align: center; padding: 16px;
+      font-family: 'Open Sans', sans-serif; pointer-events: none;
     }
     .origin-overlay p { margin: 0 0 6px; line-height: 1.4; }
     .origin-overlay .main-quote { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 800; color: #EFE1D5; }
     .origin-overlay .sub-text { font-size: 10px; color: rgba(255,255,255,0.85); text-align: left; }
     .origin-overlay .hint { font-size: 9px; color: rgba(255,255,255,0.3); margin-top: 8px; letter-spacing: 0.05em; text-transform: uppercase; }
-
-    /* ★★★ FIX: Only block clicks when the overlay is actually visible ★★★ */
-    .origin-image-wrap:hover .origin-overlay, .origin-image-wrap:active .origin-overlay { 
-      pointer-events: none; 
-    }
-
-    /* Hover/Tap effects */
     .origin-image-wrap:hover img, .origin-image-wrap:active img { transform: scale(1.03); filter: brightness(0.7); }
     .origin-image-wrap:hover .origin-overlay, .origin-image-wrap:active .origin-overlay { opacity: 1; }
 
@@ -143,8 +105,10 @@
     #demo { padding: 80px 0; background: var(--blanc); }
     .demo-wrap { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: start; }
 
-    .problem-panel { background: var(--almond); border-radius: 18px; padding: 24px; border: 1px solid var(--line); box-shadow: var(--shadow); }
-    .problem-heading { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 800; margin: 0 0 8px; color: var(--dark-roast); }
+    .problem-panel {
+      background: var(--almond); border-radius: 18px; padding: 24px; border: 1px solid var(--line); box-shadow: var(--shadow);
+    }
+    .problem-heading { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 800; margin: 0 0 8px; }
     .problem-copy { font-size: 0.85rem; color: var(--muted); margin: 0 0 16px; line-height: 1.5; }
     .problem-copy strong { color: var(--dark-roast); font-weight: 700; }
 
@@ -167,25 +131,42 @@
     .tile-badge { align-self: flex-start; display: inline-block; font-size: 5px; letter-spacing: 0.05em; text-transform: uppercase; background: rgba(24, 23, 19, 0.75); color: #fff; border-radius: 2px; padding: 1px 2px; font-weight: 700; }
     .tile-name { font-size: 5px; font-weight: 700; line-height: 1.1; color: rgba(255,255,255,0.95); text-shadow: 0 0.5px 0 rgba(0,0,0,0.25); }
 
-    .solution-panel { background: rgba(255,255,255,0.5); border-radius: 18px; padding: 28px 24px; border: 1px solid var(--line); box-shadow: var(--shadow); }
-    .demo-title { font-family: 'Fraunces', serif; font-size: 1.8rem; line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 4px; font-weight: 800; color: var(--dark-roast); }
+    /* ─── THE SEARCH BAR ─── */
+    .solution-panel {
+      background: rgba(255,255,255,0.5); border-radius: 18px; padding: 28px 24px; border: 1px solid var(--line); box-shadow: var(--shadow);
+    }
+    .demo-title { font-family: 'Fraunces', serif; font-size: 1.8rem; line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 4px; font-weight: 800; }
     .demo-subnote { margin: 0 0 18px; color: var(--muted); font-size: 13px; font-style: italic; }
 
-    .search-wrapper { position: relative; max-width: 100%; width: 100%; margin-bottom: 14px; }
-    .search-wrapper input { width: 100%; border: 1px solid rgba(24, 23, 19, 0.12); background-color: #fff; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%235E534E' d='M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 16px center; background-size: 15px 15px; border-radius: 14px; padding: 14px 14px 14px 46px; font-size: 15px; color: var(--dark-roast); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; display: block; font-family: 'Open Sans', sans-serif; }
+    .search-wrapper { position: relative; width: 100%; margin-bottom: 14px; }
+    .search-wrapper input {
+      width: 100%; border: 1px solid rgba(24, 23, 19, 0.12); background-color: #fff;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%235E534E' d='M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: 16px center; background-size: 15px 15px;
+      border-radius: 14px; padding: 14px 14px 14px 46px; font-size: 15px; color: var(--dark-roast);
+      outline: none; transition: 0.2s; display: block; font-family: 'Open Sans', sans-serif;
+    }
     .search-wrapper input:focus { border-color: var(--terracotta); box-shadow: 0 0 0 4px rgba(178, 91, 61, 0.12); }
 
-    #results { max-width: 100%; margin-top: 8px; text-align: left; }
-    .welcome-message, .no-results { margin: 0; background: var(--almond); border: 1px solid var(--line); color: var(--muted); border-radius: 14px; padding: 18px 16px; text-align: center; font-size: 13px; line-height: 1.6; }
-
-    .recipe-card { background: var(--almond); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-top: 10px; box-shadow: 0 10px 24px rgba(24,23,19,0.06); animation: rise 0.25s ease; transition: transform 0.2s ease; }
-    .recipe-card:hover { transform: translateY(-2px); }
+    #results { width: 100%; margin-top: 8px; text-align: left; }
+    .welcome-message, .no-results {
+      margin: 0; background: var(--almond); border: 1px solid var(--line); color: var(--muted);
+      border-radius: 14px; padding: 18px 16px; text-align: center; font-size: 13px; line-height: 1.6;
+    }
+    .recipe-card {
+      background: var(--almond); border: 1px solid var(--line); border-radius: 16px; padding: 18px;
+      margin-top: 10px; box-shadow: 0 10px 24px rgba(24,23,19,0.06); animation: rise 0.25s ease;
+    }
     .recipe-card .match-tag { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; color: var(--terracotta); margin-bottom: 6px; }
     .recipe-card .title { margin: 0 0 4px; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; color: var(--dark-roast); line-height: 1.1; }
     .recipe-card .source { display: inline-block; font-size: 11px; color: var(--muted); margin: 0 0 10px; text-decoration: none; font-weight: 700; }
     .recipe-card .source:hover { text-decoration: underline; }
     .recipe-card .ingredients { margin: 0 0 12px; color: var(--dark-roast); font-size: 13px; line-height: 1.6; }
-    .platform-tag { display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; padding: 6px 10px 6px 8px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(24,23,19,0.04); border: 1px solid rgba(24,23,19,0.08); color: var(--muted); font-weight: 700; }
+    .platform-tag {
+      display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; padding: 6px 10px 6px 8px;
+      font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      background: rgba(24,23,19,0.04); border: 1px solid rgba(24,23,19,0.08); color: var(--muted); font-weight: 700;
+    }
     .platform-tag i { font-size: 13px; }
     .platform-tag.tiktok i { color: #000000; }
     .platform-tag.instagram i { color: #ce5cb4; }
@@ -193,9 +174,10 @@
 
     @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* Waitlist */
     #waitlist { padding: 80px 0; background: #fff; border-top: 1px solid var(--line); }
     .waitlist-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-    .waitlist-left .section-heading { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 800; margin-bottom: 16px; color: var(--dark-roast); }
+    .waitlist-left .section-heading { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 800; margin-bottom: 16px; }
     .waitlist-left p { color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
     .waitlist-form-wrap { background: var(--blanc); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; height: 500px; box-shadow: var(--shadow); }
     .waitlist-form-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
@@ -203,13 +185,7 @@
     footer { background: var(--coffee-bean); padding: 24px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; }
     footer strong { color: #fff; }
 
-    @media (max-width: 900px) { 
-      .split-wrap, .demo-wrap, .waitlist-inner { grid-template-columns: 1fr; } 
-      .hero-left { padding-right: 0; text-align: center; } 
-      .hero-sub { margin: 0 auto 32px; }
-      .problem-panel { width: 100%; } 
-      nav { padding: 14px 20px; } 
-    }
+    @media (max-width: 900px) { .split-wrap, .demo-wrap, .waitlist-inner { grid-template-columns: 1fr; } .hero-left { padding-right: 0; text-align: center; } .hero-sub { margin: 0 auto 32px; } .problem-panel { width: 100%; } nav { padding: 14px 20px; } }
   </style>
 </head>
 <body>
@@ -252,7 +228,7 @@
 <section id="demo">
   <div class="container">
     <div class="demo-wrap">
-      <section class="problem-panel" aria-label="Problem">
+      <section class="problem-panel">
         <h2 class="problem-heading">Does your saved folder look like this?</h2>
         <p class="problem-copy">
           <strong>Cheesy pasta but easy</strong> — YouTube? IG? TikTok?<br>
@@ -276,7 +252,7 @@
         </div>
       </section>
 
-      <section class="solution-panel" aria-label="Demo">
+      <section class="solution-panel">
         <h3 class="demo-title">myPantry</h3>
         <p class="demo-subnote">Type what you remember</p>
         <div class="search-wrapper">
@@ -309,7 +285,156 @@
   <strong>MyPantry</strong> &middot; Your saved recipes, finally searchable &middot; 2026
 </footer>
 
-<script src="MyPantry v1.2 demo/mypantrydemo.js" defer></script>
+<!-- ★★★ JAVASCRIPT WITH YOUR EXACT ORIGINAL REAL LINKS ★★★ -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const resultsDiv = document.getElementById('results');
+
+    // ★★★ YOUR EXACT ORIGINAL RECIPES WITH REAL URLS ★★★
+    const recipes = [
+      {
+        title: "Lo Bak Go (turnip cake)",
+        source: " @vivianne 🍵",
+        platform: "tiktok",
+        url: "https://vt.tiktok.com/ZSx4ybNao/",
+        ingredients: ["daikon radish", "shitake mushrooms", "spring onions", "rice flour", "water", "garlic salt", "black pepper", "white sugar"],
+        tags: ["savory", "comfort", "dinner", "healthy"]
+      },
+      {
+        title: "Apple cinnamon 'pastry' (rice paper)",
+        source: "@Oliviaaa",
+        platform: "tiktok",
+        url: "https://vt.tiktok.com/ZSx4fSbD8/",
+        ingredients: ["Greek Yogurt", "apple", "rice paper", "egg", "cinnamon", "maple syrup"],
+        tags: ["sweet", "breakfast", "healthy", "dessert"]
+      },
+      {
+        title: "Anti-inflammatory banana date brownies",
+        source: "@Rak",
+        platform: "tiktok",
+        url: "https://vt.tiktok.com/ZSx4fUSRn/",
+        ingredients: ["bananas", "mango", "eggs", "soaked dates", "baking powder", "honey", "cocoa powder", "chocolate chips"],
+        tags: ["healthy", "dessert", "sweet", "snack", "protein"]
+      },
+      {
+        title: "3 ingredient protein cookies",
+        source: "@Abby",
+        platform: "tiktok",
+        url: "https://vt.tiktok.com/ZSx4f2Ad4/",
+        ingredients: ["banana", "tahini", "protein powder"],
+        tags: ["healthy", "sweet", "snack", "protein"]
+      },
+      {
+        title: "3 ingredient pasta",
+        source: "@cookmastertips",
+        platform: "tiktok",
+        url: "https://vt.tiktok.com/ZSx4f8L9n/",
+        ingredients: ["milk", "butter", "salt", "pepper", "pasta", "cheese", "parsley"],
+        tags: ["easy", "savory", "dinner", "comfort"]
+      },
+      {
+        title: "3 ingredient bread rolls",
+        source: "@makeretemiringa",
+        platform: "tiktok",
+        url: "https://vt.tiktok.com/ZSx4fPyjQ/",
+        ingredients: ["flour", "greek yogurt", "baking powder"],
+        tags: ["easy", "breakfast", "savory", "bread"]
+      },
+      {
+        title: "Quick protein tiramisu snack",
+        source: "@yummy_easy_",
+        platform: "instagram",
+        url: "https://www.instagram.com/reel/C68QfS7MA3S/?igsh=MWNjazEzeXdrbmYzZw==",
+        ingredients: ["Greek Yogurt", "cacao powder", "rice crackers", "decaf coffee", "cinnamon", "maple syrup"],
+        tags: ["healthy", "protein", "sweet", "snack"]
+      },
+      {
+        title: "Healthy jam recipe",
+        source: "@c.danicollado",
+        platform: "instagram",
+        url: "https://www.instagram.com/reel/C6CMXWbNEoC/?igsh=d2k5bDI1M2c5eHE=",
+        ingredients: ["blueberries", "water", "honey", "chia seeds"],
+        tags: ["healthy", "sweet", "breakfast", "spread"]
+      },
+      {
+        title: "Healthy Lava Cake",
+        source: "@hosseinfitness_",
+        platform: "instagram",
+        url: "https://www.instagram.com/reel/C3wEYgav5JZ/?igsh=MWN3eDQxbTNtcGhk",
+        ingredients: ["Greek Yogurt", "semi sweet chocolate chips", "cocoa powder", "chocolate protein powder"],
+        tags: ["healthy", "dessert", "sweet", "protein"]
+      },
+      {
+        title: "3 ingredient Mac and Cheese (delicious)",
+        source: "@@patrickzeinali",
+        platform: "youtube",
+        url: "https://youtu.be/WcGYBX6Ucvg?si=tkQFug5WuL_R0pVU",
+        ingredients: ["milk", "macaroni", "cheese"],
+        tags: ["easy", "comfort", "savory", "dinner"]
+      },
+      {
+        title: "3 ingredient ice cream",
+        source: "@@JoshuaWeissman",
+        platform: "youtube",
+        url: "https://youtu.be/WcGYBX6Ucvg?si=tkQFug5WuL_R0pVU",
+        ingredients: ["sweetened condensed milk", "vanilla bean paste", "heavy cream"],
+        tags: ["easy", "sweet", "dessert", "treat"]
+      }
+    ];
+
+    function normalizeQuery(q) { return q.toLowerCase().replace(/the|a|an|and|of|for|with|without|kind of|sort of/g, '').replace(/\s+/g, ' ').trim(); }
+    function getSynonyms(w) { const m = {'sweet':['sweet','sugar','candy'],'potato':['potato','potatoes','yam','yams'],'brownie':['brownie','brownies','cake','dessert'],'chocolate':['chocolate','cocoa','cacao'],'apple':['apple','apples'],'pasta':['pasta','noodle','noodles','spaghetti'],'cheese':['cheese','cheesy','mozzarella'],'protein':['protein','muscle','gym'],'healthy':['healthy','clean','diet','nutritious'],'quick':['quick','fast','easy']}; return m[w] ? m[w] : [w]; }
+    function expandQuery(q) { let e=[]; q.split(' ').forEach(w=>e.push(...getSynonyms(w))); return [...new Set(e)]; }
+
+    function searchRecipes(q) {
+      if (!q.trim()) return [];
+      const qWords = expandQuery(normalizeQuery(q));
+      let scored = recipes.map(r => {
+        let s=0; const txt = (r.title+' '+r.ingredients.join(' ')+' '+r.tags.join(' ')).toLowerCase();
+        qWords.forEach(w=>{ if(txt.includes(w)){ if(r.title.toLowerCase().includes(w)) s+=2; else if(r.tags.some(t=>t.includes(w))) s+=1.5; else s+=1; } });
+        return {...r, score:s};
+      });
+      let results = scored.filter(i=>i.score>0).sort((a,b)=>b.score-a.score);
+      let didYouMean = null;
+      if(results.length===0) {
+        const allWords = recipes.map(r=>r.title.toLowerCase().split(' ')).flat();
+        qWords.forEach(qw=>{ allWords.forEach(rw=>{ if(Math.abs(rw.length-qw.length)<=1&&rw.length>2){let m=0;for(let i=0;i<Math.min(rw.length,qw.length);i++)if(rw[i]===qw[i])m++;if(m>=Math.min(rw.length,qw.length)-1) didYouMean=rw;}});});
+      }
+      return {results, didYouMean};
+    }
+
+    function render(q) {
+      if(!q||q.trim().length===0){ resultsDiv.innerHTML=`<p class="welcome-message">Ingredient, mood, dish, or a vague kitchen memory.</p>`; return; }
+      const {results, didYouMean}=searchRecipes(q);
+      if(results.length===0) {
+        let h=`<p class="no-results">No matches found.`;
+        if(didYouMean) h+=` <button style="background:none; border:none; color:var(--terracotta); font-weight:600; cursor:pointer; text-decoration:underline;" onclick="document.getElementById('searchInput').value='${didYouMean}'; document.getElementById('searchInput').dispatchEvent(new Event('input'));">Did you mean: "${didYouMean}"?</button>`;
+        h+=`</p>`; resultsDiv.innerHTML=h; return;
+      }
+      let h=`<div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:8px;">${results.length} results found</div>`;
+      results.forEach((r,i)=> {
+        let pc = r.platform;
+        let bestMatchTag = (i === 0) ? `<div class="match-tag">★ Best match</div>` : '';
+        h+=`
+          <div class="recipe-card">
+            ${bestMatchTag}
+            <div class="title">${r.title}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <a href="${r.url}" target="_blank" style="text-decoration:underline; color:var(--terracotta); font-size:11px;">${r.source}</a>
+              <span class="platform-tag ${pc}"><i class="fa-brands fa-${pc}"></i> ${r.source}</span>
+            </div>
+            <div class="ingredients">${r.ingredients.join(', ')}</div>
+          </div>
+        `;
+      });
+      resultsDiv.innerHTML=h;
+    }
+
+    searchInput.addEventListener('input', e=>render(e.target.value));
+    resultsDiv.innerHTML = `<p class="welcome-message">Ingredient, mood, dish, or a vague kitchen memory.</p>`;
+  });
+</script>
 
 </body>
 </html>
